@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  whisper:
+    build: ./whisper
+    container_name: whisper
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./models/whisper:/models/whisper
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  ollama:
+    build: ./ollama
+    container_name: ollama
+    ports:
+      - "11435:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    volumes:
+      - ./models/ollama:/models/ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
